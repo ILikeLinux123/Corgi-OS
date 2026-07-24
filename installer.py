@@ -12,7 +12,7 @@ APP_NAME = "Corgi OS Installer"
 
 
 # ---------------------------------
-# GitHub
+#  GitHub
 # ---------------------------------
 
 GITHUB_API = (
