@@ -58,6 +58,6 @@ sudo pacman -Syu --needed tk python-pip && python -m pip install psutil requests
 - More Programing Languages supported
 
 # Showcase
-> Showcase of neofetch on my system in Windows
+> Showcase of the neofetch from Corgi-OS on my system which is a Windows computer
 
 <img width="1280" height="720" alt="2026-07-23 22-35-33" src="https://github.com/user-attachments/assets/210726fe-b0e4-47ce-8962-18ac75179b89" />
