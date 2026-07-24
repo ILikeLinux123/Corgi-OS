@@ -56,6 +56,7 @@ sudo pacman -Syu --needed tk python-pip && python -m pip install psutil requests
 - Get paw app manager working
 - Fix bugs (obviously)
 - More Programing Languages supported
+- And more!
 
 # Showcase
 > Showcase of the neofetch from Corgi-OS on my system which is a Windows computer
