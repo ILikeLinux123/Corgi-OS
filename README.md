@@ -1,3 +1,4 @@
+
 # Corgi-OS 1.0 🐕🐶
 # Corgi-OS is still in development expect issues.
 > If there are any issues please submit them to our [issues page](https://github.com/ILikeLinux123/Corgi-OS/issues)
@@ -55,3 +56,8 @@ sudo pacman -Syu --needed tk python-pip && python -m pip install psutil requests
 - Get paw app manager working
 - Fix bugs (obviously)
 - More Programing Languages supported
+
+#Showcase
+> Showcase of neofetch on my system in Windows
+
+<img width="1280" height="720" alt="2026-07-23 22-35-33" src="https://github.com/user-attachments/assets/210726fe-b0e4-47ce-8962-18ac75179b89" />
