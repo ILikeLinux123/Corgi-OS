@@ -1,1 +1,1 @@
-# Corgi-OS 🐕🐶
+# Corgi-OS 1.0 🐕🐶
