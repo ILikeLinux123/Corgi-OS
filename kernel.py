@@ -318,7 +318,11 @@ class Kernel:
 
 
             "SYSTEM": {
-
+                "UPDATES": {
+                  "updates.txt": """
+                  
+                  """
+                },
                 "STARTUP": {
 
             },
