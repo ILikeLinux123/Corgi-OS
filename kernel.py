@@ -1030,40 +1030,6 @@ def run(corgi,args):
         )
 
 
-    # GPU
-    gpu="Unknown"
-
-
-    try:
-
-        import subprocess
-
-
-        result=subprocess.check_output(
-            "wmic path win32_VideoController get name",
-            shell=True,
-            text=True
-        )
-
-
-        lines=result.splitlines()
-
-
-        if len(lines)>1:
-
-            gpu=lines[1].strip()
-
-
-    except:
-
-        pass
-
-
-    print(
-        "GPU:",
-        gpu
-    )
-
 
     # Commands
     print(
