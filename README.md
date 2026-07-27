@@ -35,6 +35,12 @@ sudo apt update && sudo apt install -y python3-tk && python3 -m pip install psut
 sudo pacman -Syu --needed tk python-pip && python -m pip install psutil requests
 ```
 
+### Fedora
+
+```
+sudo dnf install python3 python3-pip python3-tkinter && python3 -m pip install psutil requests
+```
+
 ### After that run the [installer.py script](https://github.com/ILikeLinux123/Corgi-OS/blob/main/installer.py)
 
 ### Or if you dont want to use the installer just simply run the main.py in the same directory as every other file
