@@ -1,5 +1,5 @@
 """
-Corgi OS Kernel 0.1.4
+Corgi OS Kernel 0.1.5
 
 The kernel handles:
 - system messages
