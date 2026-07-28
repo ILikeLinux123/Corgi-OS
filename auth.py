@@ -119,75 +119,47 @@ def login():
 
     users = load_users()
 
-
     if not users:
-
         create_user()
         users = load_users()
 
-
+    # Check for an autologin user first
+    for username, data in users.items():
+        if data.get("autologin", False):
+            print(f"\nAutomatically logged in as {username}! 🐶")
+            return {
+                "username": username,
+                "admin": data["admin"],
+                "password": data["password"],
+            }
 
     print("\nCorgi OS Login\n")
 
-
     while True:
 
-        username = input(
-            "Username: "
-        )
-
+        username = input("Username: ")
 
         if username not in users:
-
-            print(
-        "User does not exist."
-    )
-
-
-            create = input(
-        "Create a new user? y/N: "
-    )
-
-
+            print("User does not exist.")
+            create = input("Create a new user? y/N: ")
             if create.lower() == "y":
-
                 create_user()
-
                 users = load_users()
-
                 print()
-
                 continue
-
-
             print()
-
             continue
 
-
-
-        password = getpass.getpass(
-            "Password: "
-        )
-
+        password = getpass.getpass("Password: ")
 
         if hash_password(password) != users[username]["password"]:
-
-            print(
-                "Incorrect password.\n"
-            )
-
+            print("Incorrect password.\n")
             continue
 
-
-
-        print(
-            "\nLogin successful!"
-        )
-
+        print("\nLogin successful!")
 
         return {
             "username": username,
             "admin": users[username]["admin"],
-            "password": users[username]["password"]
+            "password": users[username]["password"],
         }
