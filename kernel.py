@@ -320,7 +320,11 @@ class Kernel:
             "SYSTEM": {
                 "UPDATES": {
                   "updates.txt": """
-                  
+                  CORGI OS 1.1 
+
+                  ADDED OVER 20+ COMMANDS
+                  ADDED TAB AND ARROW SUPPORT
+                  FIXED AUTO LOGIN BUG
                   """
                 },
                 "STARTUP": {
@@ -343,6 +347,631 @@ def run(corgi,args):
         print(command.replace(".py",""))
 
 """,
+"cp.py": """
+def run(corgi, args):
+ 
+    import copy
+ 
+    parts = args.split()
+ 
+    if len(parts) < 2:
+        print("usage: cp <source> <destination>")
+        return
+ 
+    src, dest = parts[0], parts[1]
+ 
+    folder = corgi.get_current_dir()
+ 
+    if src not in folder:
+        print(f"cp: '{src}' not found")
+        return
+ 
+    if dest in folder:
+        print(f"cp: '{dest}' already exists")
+        return
+ 
+    folder[dest] = copy.deepcopy(folder[src])
+ 
+    print(f"Copied '{src}' to '{dest}' 🐶")
+""",
+ 
+ 
+"mv.py": """
+def run(corgi, args):
+ 
+    parts = args.split()
+ 
+    if len(parts) < 2:
+        print("usage: mv <source> <destination>")
+        return
+ 
+    src, dest = parts[0], parts[1]
+ 
+    folder = corgi.get_current_dir()
+ 
+    if src not in folder:
+        print(f"mv: '{src}' not found")
+        return
+ 
+    if dest in folder:
+        print(f"mv: '{dest}' already exists")
+        return
+ 
+    folder[dest] = folder.pop(src)
+ 
+    print(f"Moved '{src}' to '{dest}'")
+""",
+ 
+ 
+"rename.py": """
+def run(corgi, args):
+ 
+    parts = args.split()
+ 
+    if len(parts) < 2:
+        print("usage: rename <old name> <new name>")
+        return
+ 
+    old, new = parts[0], parts[1]
+ 
+    folder = corgi.get_current_dir()
+ 
+    if old not in folder:
+        print(f"rename: '{old}' not found")
+        return
+ 
+    if new in folder:
+        print(f"rename: '{new}' already exists")
+        return
+ 
+    folder[new] = folder.pop(old)
+ 
+    print(f"Renamed '{old}' to '{new}' 🐶")
+""",
+ 
+ 
+"cat.py": """
+def run(corgi, args):
+ 
+    name = args.strip()
+ 
+    if not name:
+        print("usage: cat <file>")
+        return
+ 
+    folder = corgi.get_current_dir()
+ 
+    if name not in folder:
+        print("cat: file not found")
+        return
+ 
+    if isinstance(folder[name], dict):
+        print("cat: is a directory")
+        return
+ 
+    print(folder[name])
+""",
+ 
+ 
+"find.py": """
+def run(corgi, args):
+ 
+    query = args.strip()
+ 
+    if not query:
+        print("usage: find <name>")
+        return
+ 
+    folder = corgi.get_current_dir()
+    matches = []
+ 
+    def search(node, path):
+ 
+        for name, item in node.items():
+ 
+            current = path + "/" + name
+ 
+            if query.lower() in name.lower():
+                matches.append(current)
+ 
+            if isinstance(item, dict):
+                search(item, current)
+ 
+    search(folder, corgi.path())
+ 
+    if not matches:
+        print("find: no matches found")
+        return
+ 
+    for match in matches:
+        print(match)
+""",
+ 
+ 
+"grep.py": """
+def run(corgi, args):
+ 
+    query = args.strip()
+ 
+    if not query:
+        print("usage: grep <text>")
+        return
+ 
+    folder = corgi.get_current_dir()
+    found = False
+ 
+    def search(node, path):
+ 
+        nonlocal found
+ 
+        for name, item in node.items():
+ 
+            current = path + "/" + name
+ 
+            if isinstance(item, dict):
+                search(item, current)
+            else:
+                if query in item:
+                    found = True
+                    for line_num, line in enumerate(item.splitlines(), 1):
+                        if query in line:
+                            print(f"{current}:{line_num}: {line.strip()}")
+ 
+    search(folder, corgi.path())
+ 
+    if not found:
+        print("grep: no matches found")
+""",
+ 
+ 
+"wc.py": """
+def run(corgi, args):
+ 
+    name = args.strip()
+ 
+    if not name:
+        print("usage: wc <file>")
+        return
+ 
+    folder = corgi.get_current_dir()
+ 
+    if name not in folder or isinstance(folder[name], dict):
+        print("wc: file not found")
+        return
+ 
+    content = folder[name]
+    lines = content.count(chr(10)) + (1 if content else 0)
+    words = len(content.split())
+    chars = len(content)
+ 
+    print(f"{lines} lines  {words} words  {chars} chars   {name}")
+""",
+ 
+ 
+"tree.py": """
+def run(corgi, args):
+ 
+    folder = corgi.get_current_dir()
+ 
+    def walk(node, prefix=""):
+ 
+        items = list(node.items())
+ 
+        for i, (name, item) in enumerate(items):
+ 
+            connector = "└── " if i == len(items) - 1 else "├── "
+ 
+            print(prefix + connector + name)
+ 
+            if isinstance(item, dict):
+ 
+                extension = "    " if i == len(items) - 1 else "│   "
+ 
+                walk(item, prefix + extension)
+ 
+    print(corgi.path())
+    walk(folder)
+""",
+ 
+ 
+"du.py": """
+def run(corgi, args):
+ 
+    folder = corgi.get_current_dir()
+ 
+    def size_of(node):
+ 
+        total = 0
+ 
+        for item in node.values():
+ 
+            if isinstance(item, dict):
+                total += size_of(item)
+            else:
+                total += len(item)
+ 
+        return total
+ 
+    total_bytes = size_of(folder)
+ 
+    print(f"{total_bytes} bytes used in {corgi.path()}")
+""",
+ 
+ 
+"stat.py": """
+def run(corgi, args):
+ 
+    name = args.strip()
+ 
+    if not name:
+        print("usage: stat <name>")
+        return
+ 
+    folder = corgi.get_current_dir()
+ 
+    if name not in folder:
+        print("stat: not found")
+        return
+ 
+    item = folder[name]
+ 
+    print(f"Name: {name}")
+ 
+    if isinstance(item, dict):
+        print("Type: directory")
+        print(f"Items: {len(item)}")
+    else:
+        print("Type: file")
+        print(f"Size: {len(item)} bytes")
+        print(f"Lines: {item.count(chr(10)) + 1}")
+""",
+ 
+ 
+"head.py": """
+def run(corgi, args):
+ 
+    parts = args.split()
+ 
+    if not parts:
+        print("usage: head <file> [lines]")
+        return
+ 
+    name = parts[0]
+    n = int(parts[1]) if len(parts) > 1 else 10
+ 
+    folder = corgi.get_current_dir()
+ 
+    if name not in folder or isinstance(folder[name], dict):
+        print("head: file not found")
+        return
+ 
+    lines = folder[name].splitlines()
+ 
+    for line in lines[:n]:
+        print(line)
+""",
+ 
+ 
+"tail.py": """
+def run(corgi, args):
+ 
+    parts = args.split()
+ 
+    if not parts:
+        print("usage: tail <file> [lines]")
+        return
+ 
+    name = parts[0]
+    n = int(parts[1]) if len(parts) > 1 else 10
+ 
+    folder = corgi.get_current_dir()
+ 
+    if name not in folder or isinstance(folder[name], dict):
+        print("tail: file not found")
+        return
+ 
+    lines = folder[name].splitlines()
+ 
+    for line in lines[-n:]:
+        print(line)
+""",
+ 
+ 
+"sort.py": """
+def run(corgi, args):
+ 
+    name = args.strip()
+ 
+    if not name:
+        print("usage: sort <file>")
+        return
+ 
+    folder = corgi.get_current_dir()
+ 
+    if name not in folder or isinstance(folder[name], dict):
+        print("sort: file not found")
+        return
+ 
+    lines = folder[name].splitlines()
+ 
+    for line in sorted(lines):
+        print(line)
+""",
+ 
+ 
+"rev.py": """
+def run(corgi, args):
+ 
+    name = args.strip()
+ 
+    if not name:
+        print("usage: rev <file>")
+        return
+ 
+    folder = corgi.get_current_dir()
+ 
+    if name not in folder or isinstance(folder[name], dict):
+        print("rev: file not found")
+        return
+ 
+    for line in folder[name].splitlines():
+        print(line[::-1])
+""",
+ 
+ 
+"date.py": """
+def run(corgi, args):
+ 
+    from datetime import datetime
+ 
+    print(datetime.now().strftime("%A, %B %d %Y - %H:%M:%S"))
+""",
+ 
+ 
+"cal.py": """
+def run(corgi, args):
+ 
+    import calendar
+    from datetime import datetime
+ 
+    now = datetime.now()
+ 
+    print(calendar.month(now.year, now.month))
+""",
+ 
+ 
+"whoami.py": """
+def run(corgi, args):
+ 
+    if corgi.user:
+        print(corgi.user.get("username", "unknown"))
+    else:
+        print("No user logged in")
+""",
+ 
+ 
+"env.py": """
+def run(corgi, args):
+ 
+    print("USER =", corgi.user.get("username") if corgi.user else "none")
+    print("PATH =", corgi.path())
+    print("KERNEL =", corgi.VERSION)
+    print("UPTIME =", corgi.uptime())
+""",
+ 
+ 
+"ver.py": """
+def run(corgi, args):
+ 
+    print(f"Corgi OS Kernel {corgi.VERSION}")
+""",
+ 
+ 
+"calc.py": """
+def run(corgi, args):
+ 
+    expr = args.strip()
+ 
+    if not expr:
+        print("usage: calc <expression>")
+        return
+ 
+    allowed = "0123456789+-*/(). "
+ 
+    if not all(ch in allowed for ch in expr):
+        print("calc: invalid characters in expression")
+        return
+ 
+    try:
+        result = eval(expr, {"__builtins__": {}}, {})
+        print(result)
+    except Exception as e:
+        print("calc: error:", e)
+""",
+ 
+ 
+# ----------------------------
+# Fun commands
+# ----------------------------
+ 
+"bark.py": """
+def run(corgi, args):
+ 
+    print(r'''
+   / \\__
+  (    @\\___
+  /         O
+ /   (_____/
+/_____/   U
+''')
+ 
+    print("WOOF WOOF! 🐕")
+""",
+ 
+ 
+"treat.py": """
+def run(corgi, args):
+ 
+    folder = corgi.get_current_dir()
+ 
+    count = int(folder["treats.count"]) if "treats.count" in folder else 0
+    count += 1
+    folder["treats.count"] = str(count)
+ 
+    print("🦴 You gave Corgi a treat!")
+    print(f"Corgi has now had {count} treat(s) here.")
+""",
+ 
+ 
+"fortune.py": """
+def run(corgi, args):
+ 
+    import random
+ 
+    fortunes = [
+        "A good boy always finds the way.",
+        "Beware of empty food bowls.",
+        "Adventure awaits behind the next tree.",
+        "You will soon receive many belly rubs.",
+        "The best naps come after long walks.",
+        "A stranger will offer you a treat. Accept it.",
+        "Today is a good day to dig a hole.",
+    ]
+ 
+    print(random.choice(fortunes))
+""",
+ 
+ 
+"joke.py": """
+def run(corgi, args):
+ 
+    import random
+ 
+    jokes = [
+        "Why did the corgi sit in the shade? Didn't want to be a hot dog!",
+        "What do you call a magic corgi? A labracadabrador... wrong dog.",
+        "Why do corgis make bad spies? Their legs are too short to run away.",
+        "What's a corgi's favorite dance? The boogie woof.",
+        "Why did the corgi cross the road? To prove it wasn't scared of long distances.",
+    ]
+ 
+    print(random.choice(jokes))
+""",
+ 
+ 
+"eightball.py": """
+def run(corgi, args):
+ 
+    import random
+ 
+    if not args.strip():
+        print("usage: eightball <question>")
+        return
+ 
+    answers = [
+        "It is certain.",
+        "Ask again later.",
+        "Don't count on it.",
+        "Signs point to yes.",
+        "My sources say no.",
+        "Outlook good.",
+        "Very doubtful.",
+        "Corgi says yes!",
+        "Corgi says no.",
+    ]
+ 
+    print(random.choice(answers))
+""",
+ 
+ 
+"coinflip.py": """
+def run(corgi, args):
+ 
+    import random
+ 
+    print(random.choice(["Heads", "Tails"]))
+""",
+ 
+ 
+"dice.py": """
+def run(corgi, args):
+ 
+    import random
+ 
+    sides = 6
+ 
+    if args.strip().isdigit():
+        sides = int(args.strip())
+ 
+    print(f"🎲 You rolled a {random.randint(1, sides)} (d{sides})")
+""",
+ 
+ 
+"hack.py": """
+def run(corgi, args):
+ 
+    import time
+ 
+    target = args.strip() or "the mainframe"
+ 
+    lines = [
+        f"Initializing breach sequence on {target}...",
+        "Bypassing firewall...",
+        "Cracking encryption keys...",
+        "Rerouting through proxy servers...",
+        "Accessing root directory...",
+        "Download complete.",
+    ]
+ 
+    for line in lines:
+        print(line)
+        time.sleep(0.4)
+ 
+    print()
+    print("🐶 Corgi has 'hacked' the system. (This was never real.)")
+""",
+ 
+ 
+"matrix.py": """
+def run(corgi, args):
+ 
+    import random
+
+    class C:
+        RESET  = "\033[0m"
+        GREEN  = "\033[32m"
+
+    chars = "01アイウエオカキクケコ"
+    width = 40
+
+    for _ in range(15):
+        line = "".join(random.choice(chars) for _ in range(width))
+        print(f"{C.GREEN}{line}{C.RESET}")
+
+""",
+ 
+ 
+"corgisay.py": """
+def run(corgi, args):
+ 
+    message = args.strip() or "Woof!"
+ 
+    bubble_top = " " + "_" * (len(message) + 2)
+    bubble_bot = " " + "-" * (len(message) + 2)
+ 
+    print(bubble_top)
+    print(f"< {message} >")
+    print(bubble_bot)
+    print(r'''        \\
+         \\
+      / \__
+ ____/ •ᴥ• )
+/         O
+\   (_____/
+/_____/   U
+''')
+""",
+ 
 
 
                     "pwd.py": """
@@ -1029,6 +1658,40 @@ def run(corgi,args):
             "Storage: Unknown"
         )
 
+
+    # GPU
+    gpu="Unknown"
+
+
+    try:
+
+        import subprocess
+
+
+        result=subprocess.check_output(
+            "wmic path win32_VideoController get name",
+            shell=True,
+            text=True
+        )
+
+
+        lines=result.splitlines()
+
+
+        if len(lines)>1:
+
+            gpu=lines[1].strip()
+
+
+    except:
+
+        pass
+
+
+    print(
+        "GPU:",
+        gpu
+    )
 
 
     # Commands
