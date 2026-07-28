@@ -1,5 +1,5 @@
 
-# Corgi-OS 1.0 🐕🐶
+# Corgi-OS 1.1 🐕🐶
 # Corgi-OS is still in development expect issues.
 > If there are any issues please submit them to our [issues page](https://github.com/ILikeLinux123/Corgi-OS/issues)
 
@@ -20,7 +20,7 @@ To install Corgi-OS you need at least Python 3.10 (latest version recommended)
 ## Windows
 
 ```
-py -m pip install psutil requests pyreadline3
+py -m pip install psutil requests
 ```
 
 ### Debian/Ubuntu (or anything that uses apt)
