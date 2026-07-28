@@ -37,7 +37,8 @@ CORE_FILES = {
     "auth.py",
     "logger.py",
     "terminal.py",
-    "corgi.py"
+    "corgi.py",
+    "simple_input.py"
 }
 
 
