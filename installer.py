@@ -38,7 +38,8 @@ CORE_FILES = {
     "logger.py",
     "terminal.py",
     "corgi.py",
-    "simple_input.py"
+    "simple_input.py",
+    "lang_runner.py"
 }
 
 
