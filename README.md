@@ -1,5 +1,5 @@
 
-# Corgi-OS 1.1 🐕🐶
+# Corgi-OS 1.2 🐕🐶
 # Corgi-OS is still in development expect issues.
 > If there are any issues please submit them to our [issues page](https://github.com/ILikeLinux123/Corgi-OS/issues)
 
@@ -56,6 +56,8 @@ sudo dnf install python3 python3-pip python3-tkinter && python3 -m pip install p
 -  Filesystem refresh system
 -  Built-in installer
 -  Corgi kernel panic messages
+- Supports different programing languages
+> Example Lua, Rust, JS, C, Etc
 
 # Future Update plans
 
