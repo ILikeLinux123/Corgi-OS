@@ -1,5 +1,5 @@
 """
-Corgi OS Kernel 0.1.5
+Corgi OS Kernel 0.1.4
 
 The kernel handles:
 - system messages
@@ -24,7 +24,7 @@ from logger import Logger
 # Development reset switch
 # ==========================
 
-FACTORY_RESET = False
+FACTORY_RESET = True
 
 SAVE_FILE = "corgi_fs.json"
 
@@ -32,7 +32,7 @@ SAVE_FILE = "corgi_fs.json"
 
 class Kernel:
     username = ""
-    VERSION = "0.1.4"
+    VERSION = "0.1.5"
 
 
     def __init__(self):
@@ -320,11 +320,18 @@ class Kernel:
             "SYSTEM": {
                 "UPDATES": {
                   "updates.txt": """
-                  CORGI OS 1.1 
-
-                  ADDED OVER 20+ COMMANDS
-                  ADDED TAB AND ARROW SUPPORT
-                  FIXED AUTO LOGIN BUG
+                  CORGI OS 1.2
+                
+                  ADDED SUPORT FOR 
+                  PYTHON
+                  C
+                  C#
+                  C++
+                  RUST
+                  JS
+                  HTML
+                  MARKDOWN
+                  LUA
                   """
                 },
                 "STARTUP": {
@@ -717,6 +724,444 @@ def run(corgi, args):
     for line in folder[name].splitlines():
         print(line[::-1])
 """,
+"lua.py": """
+def run(corgi, args):
+ 
+    filename = args.strip()
+ 
+ 
+    if not filename:
+ 
+        print()
+        print("🐶 Lua")
+        print("-" * 40)
+        print("Category: Systems & Scripting")
+        print()
+        print(
+            "A lightweight, embeddable scripting language widely used "
+            "in game engines, modding, and configuration systems."
+        )
+        print()
+        print("Usage: lua <file>   (runs it through an embedded Lua runtime)")
+        print()
+ 
+        return
+ 
+ 
+ 
+    folder = corgi.get_current_dir()
+ 
+ 
+    if filename not in folder or isinstance(folder[filename], dict):
+ 
+        print(f"lua: '{filename}' not found")
+ 
+        return
+ 
+ 
+ 
+    try:
+ 
+        import lupa
+ 
+    except ImportError:
+ 
+        print("[ERROR] lupa isn't installed.")
+        print("Run: pip install lupa")
+ 
+        return
+ 
+ 
+ 
+    try:
+ 
+        runtime = lupa.LuaRuntime(unpack_returned_tuples=True)
+ 
+        runtime.execute(folder[filename])
+ 
+ 
+    except Exception as e:
+ 
+        print("[Lua error]")
+        print(e)
+""",
+"html.py": """
+def run(corgi, args):
+ 
+    parts = args.split()
+ 
+    light = "-light" in parts
+ 
+    parts = [p for p in parts if p != "-light"]
+ 
+    filename = parts[0] if parts else ""
+ 
+ 
+    if not filename:
+ 
+        print()
+        print("🐶 HTML")
+        print("-" * 40)
+        print("Category: Web Development & Scripting")
+        print()
+        print(
+            "The fundamental structural markup essential for all web design."
+        )
+        print()
+        print("Usage: html <file>          renders with full JS (pywebview)")
+        print("       html <file> -light   renders without JS (tkinterweb)")
+        print()
+ 
+        return
+ 
+ 
+ 
+    folder = corgi.get_current_dir()
+ 
+ 
+    if filename not in folder or isinstance(folder[filename], dict):
+ 
+        print(f"html: '{filename}' not found")
+ 
+        return
+ 
+ 
+    content = folder[filename]
+ 
+ 
+    if light:
+ 
+        _render_light(filename, content)
+ 
+    else:
+ 
+        _render_full(filename, content)
+ 
+ 
+ 
+def _render_full(filename, content):
+ 
+    try:
+ 
+        import webview
+        import tempfile
+        import os
+ 
+ 
+        with tempfile.TemporaryDirectory() as tmp_dir:
+ 
+            path = os.path.join(tmp_dir, filename)
+ 
+            with open(path, "w", encoding="utf-8") as f:
+ 
+                f.write(content)
+ 
+ 
+            print(f"🐶 Rendering '{filename}' in Corgi Browser (JS enabled)...")
+ 
+ 
+            webview.create_window(
+                f"Corgi Browser - {filename}",
+                url="file://" + path,
+                width=900,
+                height=650,
+            )
+ 
+ 
+            webview.start()
+ 
+ 
+    except ImportError:
+ 
+        print("[ERROR] pywebview isn't installed.")
+        print("Run: pip install pywebview")
+        print()
+        print("Or try the lightweight renderer instead: html " + filename + " -light")
+ 
+ 
+ 
+def _render_light(filename, content):
+ 
+    print()
+    print("⚠️  Light mode: no JavaScript support.")
+    print("    Uses tkinterweb + Tkinter — HTML/CSS layout only.")
+    print()
+ 
+ 
+    try:
+ 
+        import tkinter as tk
+        from tkinterweb import HtmlFrame
+ 
+ 
+        root = tk.Tk()
+        root.title(f"Corgi Browser (light) - {filename}")
+        root.geometry("900x650")
+ 
+ 
+        # tkinterweb sometimes converts CSS colors with alpha (rgba/hsla
+        # with alpha != 1) into an 8-digit hex color, which Tk's native
+        # color parser rejects. Skip just that error so one bad style
+        # doesn't spam the terminal or interrupt rendering.
+        def quiet_callback_exception(exc, val, tb):
+ 
+            if isinstance(val, tk.TclError) and "invalid color name" in str(val):
+                return
+ 
+            import traceback
+ 
+            traceback.print_exception(exc, val, tb)
+ 
+ 
+        root.report_callback_exception = quiet_callback_exception
+ 
+ 
+        frame = HtmlFrame(root, messages_enabled=False)
+ 
+        frame.load_html(content)
+ 
+        frame.pack(fill="both", expand=True)
+ 
+ 
+        print(f"🐶 Rendering '{filename}' in Corgi Browser (light)...")
+ 
+        root.mainloop()
+ 
+ 
+    except ImportError:
+ 
+        print("[ERROR] tkinterweb isn't installed.")
+        print("Run: pip install tkinterweb")
+        print()
+        print("Falling back to a text-only preview:")
+        print()
+ 
+ 
+        import re
+ 
+        text = re.sub("<[^<]+?>", "", content)
+ 
+        print(text.strip())
+""",
+"js.py": """
+def run(corgi, args):
+ 
+    filename = args.strip()
+ 
+ 
+    if not filename:
+ 
+        print()
+        print("🐶 JavaScript")
+        print("-" * 40)
+        print("Category: Web Development & Scripting")
+        print()
+        print(
+            "The standard language for front-end browser interactivity "
+            "and full-stack runtime via Node.js."
+        )
+        print()
+        print("Usage: js <file>   (runs it through an embedded QuickJS engine)")
+        print()
+ 
+        return
+ 
+ 
+ 
+    folder = corgi.get_current_dir()
+ 
+ 
+    if filename not in folder or isinstance(folder[filename], dict):
+ 
+        print(f"js: '{filename}' not found")
+ 
+        return
+ 
+ 
+ 
+    try:
+ 
+        import quickjs
+ 
+    except ImportError:
+ 
+        print("[ERROR] quickjs isn't installed.")
+        print("Run: pip install quickjs")
+ 
+        return
+ 
+ 
+ 
+    try:
+ 
+        ctx = quickjs.Context()
+ 
+ 
+        def _log(*args):
+ 
+            print(" ".join(str(a) for a in args))
+ 
+ 
+        ctx.add_callable("__corgi_log", _log)
+ 
+ 
+        ctx.eval(
+            "var console = { "
+            "log: function(...args) { __corgi_log(...args); }, "
+            "warn: function(...args) { __corgi_log(...args); }, "
+            "error: function(...args) { __corgi_log(...args); } "
+            "};"
+        )
+ 
+ 
+        ctx.eval(folder[filename])
+ 
+ 
+    except Exception as e:
+ 
+        print("[JS error]")
+        print(e)
+""",
+"md.py": """
+def run(corgi, args):
+ 
+    import re
+ 
+ 
+    filename = args.strip()
+ 
+ 
+    if not filename:
+ 
+        print()
+        print("🐶 Markdown")
+        print("-" * 40)
+        print("Category: Documentation / Web Publishing")
+        print()
+        print(
+            "A lightweight plain-text formatting syntax used for READMEs, "
+            "docs, and static site content."
+        )
+        print()
+        print("Usage: md <file>   (renders it in the terminal)")
+        print()
+ 
+        return
+ 
+ 
+ 
+    folder = corgi.get_current_dir()
+ 
+ 
+    if filename not in folder or isinstance(folder[filename], dict):
+ 
+        print(f"md: '{filename}' not found")
+ 
+        return
+ 
+ 
+    content = folder[filename]
+ 
+ 
+    RESET = "\\033[0m"
+    BOLD = "\\033[1m"
+    DIM = "\\033[2m"
+    UND = "\\033[4m"
+    RED = "\\033[31m"
+    GREEN = "\\033[32m"
+    YELLOW = "\\033[33m"
+    BLUE = "\\033[34m"
+    PINK = "\\033[35m"
+    CYAN = "\\033[36m"
+ 
+ 
+    header_colors = [RED, YELLOW, GREEN, CYAN, BLUE, PINK]
+ 
+ 
+    def inline(text):
+ 
+        text = re.sub(r"\\*\\*(.+?)\\*\\*", BOLD + r"\\1" + RESET, text)
+ 
+        text = re.sub(r"(?<!\\*)\\*([^\\*]+?)\\*(?!\\*)", UND + r"\\1" + RESET, text)
+ 
+        text = re.sub(r"`([^`]+?)`", DIM + r"\\1" + RESET, text)
+ 
+        text = re.sub(
+            r"\\[([^\\]]+?)\\]\\(([^\\)]+?)\\)",
+            BLUE + r"\\1" + RESET + " (" + DIM + r"\\2" + RESET + ")",
+            text,
+        )
+ 
+        return text
+ 
+ 
+    in_code = False
+ 
+ 
+    for line in content.splitlines():
+ 
+        stripped = line.strip()
+ 
+ 
+        if stripped.startswith("```"):
+ 
+            in_code = not in_code
+ 
+            print(DIM + "-" * 40 + RESET)
+ 
+            continue
+ 
+ 
+        if in_code:
+ 
+            print(DIM + line + RESET)
+ 
+            continue
+ 
+ 
+        header = re.match(r"^(#{1,6})\\s+(.*)", line)
+ 
+        if header:
+ 
+            level = len(header.group(1))
+ 
+            color = header_colors[min(level - 1, len(header_colors) - 1)]
+ 
+            print(BOLD + color + header.group(2) + RESET)
+ 
+            continue
+ 
+ 
+        bullet = re.match(r"^[\\*\\-]\\s+(.*)", line)
+ 
+        if bullet:
+ 
+            print(CYAN + "• " + RESET + inline(bullet.group(1)))
+ 
+            continue
+ 
+ 
+        numbered = re.match(r"^\\d+\\.\\s+(.*)", line)
+ 
+        if numbered:
+ 
+            print(YELLOW + "# " + RESET + inline(numbered.group(1)))
+ 
+            continue
+ 
+ 
+        quote = re.match(r"^>\\s?(.*)", line)
+ 
+        if quote:
+ 
+            print(DIM + "| " + RESET + inline(quote.group(1)))
+ 
+            continue
+ 
+ 
+        print(inline(line))
+""",
+
  
  
 "date.py": """
@@ -726,8 +1171,323 @@ def run(corgi, args):
  
     print(datetime.now().strftime("%A, %B %d %Y - %H:%M:%S"))
 """,
+ "c.py": """
+def run(corgi, args):
+ 
+    parts = args.split()
+ 
+    if not parts:
+ 
+        from lang_runner import print_info
+ 
+        print_info("c")
+ 
+        return
  
  
+    filename = parts[0]
+    rest = parts[1:]
+ 
+ 
+    folder = corgi.get_current_dir()
+ 
+ 
+    if filename not in folder or isinstance(folder[filename], dict):
+ 
+        print(f"c: '{filename}' not found")
+ 
+        return
+ 
+ 
+    if rest and rest[0] == "-call":
+ 
+        if len(rest) < 2:
+ 
+            print("usage: c <file> -call <function> [args...]")
+ 
+            return
+ 
+ 
+        function_name = rest[1]
+        arg_values = rest[2:]
+ 
+ 
+        from lang_runner import call_native_function
+ 
+        call_native_function("c", folder[filename], filename, function_name, arg_values)
+ 
+        return
+ 
+ 
+    from lang_runner import run_file
+ 
+    run_file("c", folder[filename], filename)
+""",
+ 
+ 
+"cpp.py": """
+def run(corgi, args):
+ 
+    parts = args.split()
+ 
+    if not parts:
+ 
+        from lang_runner import print_info
+ 
+        print_info("cpp")
+ 
+        return
+ 
+ 
+    filename = parts[0]
+    rest = parts[1:]
+ 
+ 
+    folder = corgi.get_current_dir()
+ 
+ 
+    if filename not in folder or isinstance(folder[filename], dict):
+ 
+        print(f"cpp: '{filename}' not found")
+ 
+        return
+ 
+ 
+    if rest and rest[0] == "-call":
+ 
+        if len(rest) < 2:
+ 
+            print("usage: cpp <file> -call <function> [args...]")
+            print('note: the function must be declared extern "C" in your file')
+ 
+            return
+ 
+ 
+        function_name = rest[1]
+        arg_values = rest[2:]
+ 
+ 
+        from lang_runner import call_native_function
+ 
+        call_native_function("cpp", folder[filename], filename, function_name, arg_values)
+ 
+        return
+ 
+ 
+    from lang_runner import run_file
+ 
+    run_file("cpp", folder[filename], filename)
+""",
+ 
+ 
+"rust.py": """
+def run(corgi, args):
+ 
+    parts = args.split()
+ 
+    if not parts:
+ 
+        from lang_runner import print_info
+ 
+        print_info("rust")
+ 
+        return
+ 
+ 
+    filename = parts[0]
+    rest = parts[1:]
+ 
+ 
+    folder = corgi.get_current_dir()
+ 
+ 
+    if filename not in folder or isinstance(folder[filename], dict):
+ 
+        print(f"rust: '{filename}' not found")
+ 
+        return
+ 
+ 
+    if rest and rest[0] == "-call":
+ 
+        if len(rest) < 2:
+ 
+            print("usage: rust <file> -call <function> [args...]")
+            print("note: the function must be #[no_mangle] pub extern \\"C\\" fn ...")
+ 
+            return
+ 
+ 
+        function_name = rest[1]
+        arg_values = rest[2:]
+ 
+ 
+        from lang_runner import call_native_function
+ 
+        call_native_function("rust", folder[filename], filename, function_name, arg_values)
+ 
+        return
+ 
+ 
+    from lang_runner import run_file
+ 
+    run_file("rust", folder[filename], filename)
+""",
+ 
+ 
+"csharp.py": """
+def run(corgi, args):
+ 
+    parts = args.split()
+ 
+    if not parts:
+ 
+        from lang_runner import print_info
+ 
+        print_info("csharp")
+ 
+        return
+ 
+ 
+    filename = parts[0]
+    rest = parts[1:]
+ 
+ 
+    folder = corgi.get_current_dir()
+ 
+ 
+    if filename not in folder or isinstance(folder[filename], dict):
+ 
+        print(f"csharp: '{filename}' not found")
+ 
+        return
+ 
+ 
+    if rest and rest[0] == "-call":
+ 
+        if len(rest) < 3:
+ 
+            print("usage: csharp <file> -call <ClassName> <MethodName> [args...]")
+            print("note: the method must be declared 'public static'")
+ 
+            return
+ 
+ 
+        class_name = rest[1]
+        method_name = rest[2]
+        arg_values = rest[3:]
+ 
+ 
+        from lang_runner import call_csharp_function
+ 
+        call_csharp_function(folder[filename], filename, class_name, method_name, arg_values)
+ 
+        return
+ 
+ 
+    from lang_runner import run_file
+ 
+    run_file("csharp", folder[filename], filename)
+""",
+
+ "py.py": """
+def run(corgi, args):
+
+    parts = args.split()
+
+    if not parts:
+        print("Usage: python <file.py>")
+        return
+
+    filename = parts[0]
+    program_args = parts[1:]
+
+    folder = corgi.get_current_dir()
+
+    if filename not in folder or isinstance(folder[filename], dict):
+        print(f"python: '{filename}' not found")
+        return
+
+    import subprocess
+    import tempfile
+    import os
+    import sys
+
+    try:
+        with tempfile.NamedTemporaryFile(
+            mode="w",
+            suffix=".py",
+            delete=False
+        ) as f:
+            f.write(folder[filename])
+            temp_file = f.name
+
+        result = subprocess.run(
+            [sys.executable, temp_file] + program_args,
+            capture_output=True,
+            text=True
+        )
+
+        if result.returncode != 0:
+            print("🐶 Python program crashed:")
+            print(result.stderr)
+            return
+
+        print(result.stdout)
+
+    finally:
+        if os.path.exists(temp_file):
+            os.remove(temp_file)
+""",
+ "python.py": """
+def run(corgi, args):
+
+    parts = args.split()
+
+    if not parts:
+        print("Usage: python <file.py>")
+        return
+
+    filename = parts[0]
+    program_args = parts[1:]
+
+    folder = corgi.get_current_dir()
+
+    if filename not in folder or isinstance(folder[filename], dict):
+        print(f"python: '{filename}' not found")
+        return
+
+    import subprocess
+    import tempfile
+    import os
+    import sys
+
+    try:
+        with tempfile.NamedTemporaryFile(
+            mode="w",
+            suffix=".py",
+            delete=False
+        ) as f:
+            f.write(folder[filename])
+            temp_file = f.name
+
+        result = subprocess.run(
+            [sys.executable, temp_file] + program_args,
+            capture_output=True,
+            text=True
+        )
+
+        if result.returncode != 0:
+            print("🐶 Python program crashed:")
+            print(result.stderr)
+            return
+
+        print(result.stdout)
+
+    finally:
+        if os.path.exists(temp_file):
+            os.remove(temp_file)
+""",
 "cal.py": """
 def run(corgi, args):
  

@@ -9,7 +9,7 @@ import random
 # -------------------------
 
 NORMAL = r"""
-      / \__
+      / \_/\
  ____/ •ᴥ• )
 /         O
 \   (_____/
@@ -20,7 +20,7 @@ NORMAL = r"""
 WARNING = r"""
         :/
 
-      / \__
+      / \_/\
  ____/ •-• )
 /         O
 \   (_____/
@@ -32,11 +32,11 @@ PANIC = r"""
         CORGI PANIC
         I MEAN KERNEL PANIC 
 
-        :(
+        :'(
 
-        / \__
+        / \_/\
    ____/  x x)
-  /         0
+  /         O
  /   (_____/
 /_____/   U
 """
@@ -46,7 +46,7 @@ SAD = r"""
 
         :(
 
-      / \__
+      / \_/\
  ____/ •︿• )
 /         O
 \   (_____/
@@ -108,7 +108,7 @@ RARE_MESSAGES = [
 
     "I deleted my own homework folder.",
 
-    "Error 418: I'm a Corgi.",
+    "Error 418: I Corgi.",
 
     "Da kernel looked at me wierd.",
 

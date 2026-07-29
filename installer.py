@@ -12,7 +12,7 @@ APP_NAME = "Corgi OS Installer"
 
 
 # ---------------------------------
-#  GitHub
+# GitHub
 # ---------------------------------
 
 GITHUB_API = (
@@ -25,7 +25,7 @@ GITHUB_API = (
 
 
 # ---------------------------------
-#  Files
+# Files
 # ---------------------------------
 
 CORE_FILES = {
@@ -37,9 +37,7 @@ CORE_FILES = {
     "auth.py",
     "logger.py",
     "terminal.py",
-    "corgi.py",
-    "simple_input.py",
-    "lang_runner.py"
+    "corgi.py"
 }
 
 
