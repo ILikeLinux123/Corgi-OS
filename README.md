@@ -56,16 +56,16 @@ sudo dnf install python3 python3-pip python3-tkinter && python3 -m pip install p
 -  Filesystem refresh system
 -  Built-in installer
 -  Corgi kernel panic messages
-- Supports different programing languages
+- Supports different programming languages
 > Example Lua, Rust, JS, C, Etc
 
 # Future Update plans
 
 - Make it more in depth and customizable
-- Get paw app manager working (7/27/26 We found a way on how we are going to do  paw it is still indev)
+- Get paw app manager working (7/27/26 We found a way on how we are going to do  paw it is still in development)
 - Fix bugs (obviously)
 - More Programing Languages supported
-- Make it a bootable [.ISO file](https://en.wikipedia.org/wiki/Optical_disc_image) (7/27/26 We found a way on how we are going to do however it is still indev)
+- Make it a bootable [.ISO file](https://en.wikipedia.org/wiki/Optical_disc_image) (7/27/26 We found a way on how we are going to do however it is still in development)
 - And more!
 
 # Showcase
@@ -73,7 +73,7 @@ sudo dnf install python3 python3-pip python3-tkinter && python3 -m pip install p
 
 <img width="1280" height="720" alt="2026-07-23 22-35-33" src="https://github.com/user-attachments/assets/210726fe-b0e4-47ce-8962-18ac75179b89" />
 
-# Thank you if you install and/or use Corgi-OS it means alot to me <3
+# Thank you if you install and/or use Corgi-OS it means a lot to me <3
 
 ```
       / \_/\
