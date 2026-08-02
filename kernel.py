@@ -24,7 +24,7 @@ from logger import Logger
 # Development reset switch
 # ==========================
 
-FACTORY_RESET = True
+FACTORY_RESET = False
 
 SAVE_FILE = "corgi_fs.json"
 
