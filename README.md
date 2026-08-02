@@ -62,7 +62,7 @@ sudo dnf install python3 python3-pip python3-tkinter && python3 -m pip install p
 # Future Update plans
 
 - Make it more in depth and customizable
-- Get paw app manager working (7/27/26 I found a way on how i am going to do  paw it is still in development)
+- Get paw app manager working (Paw is in development right now)
 - Fix bugs (obviously)
 - More Programing Languages supported
 - Make it a bootable [.ISO file](https://en.wikipedia.org/wiki/Optical_disc_image) (7/27/26 i found a way on how i am going to do however it is still in development)
