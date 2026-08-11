@@ -6,7 +6,7 @@
 > Btw if there are any small bugs i will fix them just normaly without updating the entire operating system +.1 everytime i fix one
 ## About:
 
-Corgi-OS is a makeshift Linux distro (please do not attempt to install on a computer)
+Corgi-OS is a makeshift Linux distro
 I am really hoping i can make it so it is bootable on an actual computer
 This is a project i have been working on for months and over 3000 lines of code,
 all of this has been writen in python including all commands
