@@ -8,7 +8,7 @@
 
 Corgi-OS is a makeshift Linux distro
 I am really hoping i can make it so it is bootable on an actual computer
-This is a project i have been working on for months and over 3000 lines of code,
+This is a project i have been working on for months and over 4000 lines of code,
 all of this has been writen in python including all commands
 
 # Installation:
